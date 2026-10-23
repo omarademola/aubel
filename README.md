@@ -1,4 +1,4 @@
-Live: https://aubel-landing-page.vercel.app/
+Live: https://aubel.vercel.app/
 
 # Aubel Veterinary On the Go - Landing Page
 Mobile veterinary landing page for Ogun-Lagos environs.
