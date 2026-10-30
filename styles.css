@@ -1,0 +1,75 @@
+html {
+  color-scheme: light dark;
+}
+
+body {
+  font-family: "Aptos", "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+  background-color: Canvas;
+  color: CanvasText;
+}
+
+.glass-card {
+  background: color-mix(in srgb, Canvas 95%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.pulse-red {
+  animation: pulse-red-anim 2s infinite;
+}
+
+@keyframes pulse-red-anim {
+  0% {
+    box-shadow: 0 0 0 0 rgb(239 68 68 / 70%);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgb(239 68 68 / 0%);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgb(239 68 68 / 0%);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #111827;
+    color: #e5e7eb;
+  }
+  nav {
+    background-color: rgb(31 41 55 / 96%) !important;
+    border-color: #4b5563 !important;
+  }
+  nav h1 span {
+    color: #d1fae5 !important;
+    background-color: #064e3b !important;
+    border-color: #047857 !important;
+  }
+  .bg-white,
+  .bg-slate-50,
+  .bg-slate-100,
+  .bg-brand-50,
+  .bg-brand-100,
+  .bg-emerald-50,
+  .bg-emerald-100 {
+    background-color: #1f2937 !important;
+  }
+  .text-slate-800,
+  .text-slate-700,
+  .text-slate-600,
+  .text-slate-500 {
+    color: #d1d5db !important;
+  }
+  .text-navy-900,
+  .text-emerald-900 {
+    color: #f3f4f6 !important;
+  }
+  .border-slate-100,
+  .border-slate-200,
+  .border-slate-300 {
+    border-color: #4b5563 !important;
+  }
+  input,
+  select,
+  textarea {
+    color: #f9fafb;
+  }
+}
