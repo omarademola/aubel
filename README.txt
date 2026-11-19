@@ -5,13 +5,13 @@ Aubel Veterinary on the Go
 
 A mobile-friendly website for Aubel Veterinary on the Go, serving pet and farm
 animal owners in Ogun State and Lagos. It brings service information, a basic
-symptom urgency guide, a visit fee estimate, and contact options together on one
+signs urgency guide, a visit fee estimate, and contact options together on one
 page.
 
 ## What the site does
 
 - Lets visitors choose a species and age category before showing matching
-	symptom prompts for dogs, cats, goats, sheep, cattle, rabbits, and poultry.
+	sign prompts for dogs, cats, goats, sheep, cattle, rabbits, and poultry.
 - For poultry, asks whether the flock is broiler or layer before displaying
 	subtype-specific prompts.
 - Provides a simple urgency assessment from the selected prompts and visitor's

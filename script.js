@@ -1,321 +1,114 @@
-const symptomCatalog = {
-  Dog: {
-    young: [
-      "Vomiting or diarrhea",
-      "Poor feeding",
-      "Weakness or unusual sleepiness",
-      "Coughing or difficult breathing",
-      "Bloated abdomen",
-      "Pale gums",
-      "Possible toxin exposure",
-    ],
-    juvenile: [
-      "Vomiting or diarrhea",
-      "Reduced appetite",
-      "Coughing or nasal discharge",
-      "Limping or pain",
-      "Itching or hair loss",
-      "Difficulty urinating",
-      "Possible toxin exposure",
-    ],
-    adult: [
-      "Vomiting or diarrhea",
-      "Reduced appetite",
-      "Coughing or difficult breathing",
-      "Limping or pain",
-      "Itching or hair loss",
-      "Bloated abdomen",
-      "Difficulty urinating",
-      "Possible toxin exposure",
-    ],
-  },
-  Cat: {
-    young: [
-      "Vomiting or diarrhea",
-      "Poor feeding",
-      "Weakness or unusual sleepiness",
-      "Eye or nasal discharge",
-      "Coughing or difficult breathing",
-      "Difficulty urinating",
-    ],
-    juvenile: [
-      "Vomiting or diarrhea",
-      "Reduced appetite",
-      "Eye or nasal discharge",
-      "Difficulty urinating",
-      "Limping or pain",
-      "Itching or hair loss",
-    ],
-    adult: [
-      "Vomiting or diarrhea",
-      "Reduced appetite",
-      "Difficulty urinating",
-      "Straining in the litter area",
-      "Coughing or difficult breathing",
-      "Limping or pain",
-      "Possible toxin exposure",
-    ],
-  },
-  Goat: {
-    young: [
-      "Not nursing or weak suckling",
-      "Diarrhea or soiled tail",
-      "Coughing or nasal discharge",
-      "Bloated abdomen",
-      "Difficulty standing",
-      "Pale eyelids",
-    ],
-    juvenile: [
-      "Diarrhea",
-      "Poor growth or appetite",
-      "Coughing or nasal discharge",
-      "Bloated abdomen",
-      "Difficulty standing",
-      "Pale eyelids",
-      "Limping",
-    ],
-    adult: [
-      "Reduced appetite or cud chewing",
-      "Diarrhea",
-      "Bloated abdomen",
-      "Coughing or nasal discharge",
-      "Pale eyelids",
-      "Limping or swollen joints",
-      "Difficulty giving birth",
-    ],
-  },
-  Sheep: {
-    young: [
-      "Not nursing or weak suckling",
-      "Diarrhea or soiled tail",
-      "Coughing or nasal discharge",
-      "Bloated abdomen",
-      "Difficulty standing",
-      "Pale eyelids",
-    ],
-    juvenile: [
-      "Diarrhea",
-      "Poor growth or appetite",
-      "Coughing or nasal discharge",
-      "Bloated abdomen",
-      "Difficulty standing",
-      "Pale eyelids",
-      "Limping",
-    ],
-    adult: [
-      "Reduced appetite or cud chewing",
-      "Diarrhea",
-      "Bloated abdomen",
-      "Coughing or nasal discharge",
-      "Pale eyelids",
-      "Limping",
-      "Difficulty giving birth",
-    ],
-  },
-  Cattle: {
-    young: [
-      "Not nursing or weak suckling",
-      "Diarrhea",
-      "Coughing or nasal discharge",
-      "Navel swelling or discharge",
-      "Difficulty standing",
-      "Bloated abdomen",
-    ],
-    juvenile: [
-      "Diarrhea",
-      "Poor growth or appetite",
-      "Coughing or nasal discharge",
-      "Lameness",
-      "Bloated abdomen",
-      "Eye discharge",
-    ],
-    adult: [
-      "Reduced appetite or cud chewing",
-      "Drop in milk production",
-      "Diarrhea",
-      "Coughing or difficult breathing",
-      "Lameness",
-      "Bloated abdomen",
-      "Difficulty giving birth",
-    ],
-  },
-  Rabbit: {
-    young: [
-      "Not eating",
-      "Diarrhea or very small droppings",
-      "Weakness or unusual sleepiness",
-      "Nasal or eye discharge",
-      "No droppings",
-      "Bloated abdomen",
-    ],
-    juvenile: [
-      "Not eating",
-      "Diarrhea or very small droppings",
-      "No droppings",
-      "Nasal or eye discharge",
-      "Head tilt or loss of balance",
-      "Limping",
-    ],
-    adult: [
-      "Not eating",
-      "No droppings or very small droppings",
-      "Drooling or wet chin",
-      "Nasal or eye discharge",
-      "Head tilt or loss of balance",
-      "Limping",
-      "Possible toxin exposure",
-    ],
-  },
-};
-
-const poultrySymptomCatalog = {
-  Broiler: {
-    young: [
-      "Several chicks weak or inactive",
-      "Poor feed or water intake",
-      "Watery droppings",
-      "Coughing, sneezing, or gasping",
-      "Drooping wings",
-      "Sudden deaths",
-    ],
-    juvenile: [
-      "Uneven flock growth",
-      "Poor feed or water intake",
-      "Watery or bloody droppings",
-      "Coughing, sneezing, or gasping",
-      "Lameness",
-      "Sudden deaths",
-    ],
-    adult: [
-      "Reduced feed or water intake",
-      "Weakness or lameness",
-      "Coughing, sneezing, or gasping",
-      "Watery or bloody droppings",
-      "Sudden deaths",
-    ],
-  },
-  Layer: {
-    young: [
-      "Several chicks weak or inactive",
-      "Poor feed or water intake",
-      "Watery droppings",
-      "Coughing, sneezing, or gasping",
-      "Drooping wings",
-      "Sudden deaths",
-    ],
-    juvenile: [
-      "Uneven flock growth",
-      "Poor feed or water intake",
-      "Watery or bloody droppings",
-      "Coughing, sneezing, or gasping",
-      "Delayed or uneven maturity",
-      "Sudden deaths",
-    ],
-    adult: [
-      "Drop in egg production",
-      "Thin, soft, or misshapen eggs",
-      "Poor feed or water intake",
-      "Watery or bloody droppings",
-      "Coughing, sneezing, or gasping",
-      "Sudden deaths",
-    ],
-  },
-};
-
-let selectedSymptoms = new Set();
+let selectedSigns = new Set();
+let otherOn = false;
 let currentHealthResult = null;
 
 const byId = (id) => document.getElementById(id);
+const CHIP_OFF = ["bg-slate-100", "text-slate-700", "border-slate-300"];
+const CHIP_ON = ["bg-brand-600", "text-white", "border-brand-600"];
+
+function setChip(button, on) {
+  button.classList.remove(...(on ? CHIP_OFF : CHIP_ON));
+  button.classList.add(...(on ? CHIP_ON : CHIP_OFF));
+  button.setAttribute("aria-pressed", String(on));
+}
 
 function updateAnimalFields() {
   const species = byId("pet-species").value;
-  const ageSelect = byId("pet-age");
-  const hasSpecies = Boolean(symptomCatalog[species]) || species === "Poultry";
-  ageSelect.disabled = !hasSpecies;
-  byId("pet-weight").disabled = !hasSpecies || !ageSelect.value;
+  byId("pet-age").disabled = !species;
   byId("poultry-type-wrap").classList.toggle("hidden", species !== "Poultry");
   byId("poultry-type").required = species === "Poultry";
-  updateSymptoms();
+  updateSigns();
 }
 
-function updateSymptoms() {
+function updateSigns() {
   const species = byId("pet-species").value;
   const age = byId("pet-age").value;
   const poultryType = byId("poultry-type").value;
-  const options =
-    species === "Poultry"
-      ? poultrySymptomCatalog[poultryType]?.[age] || []
-      : symptomCatalog[species]?.[age] || [];
+  const options = signsFor(species, poultryType, age);
   const container = byId("symptom-chips");
   container.replaceChildren();
+  selectedSigns.clear();
+  otherOn = false;
+  byId("other-wrap").classList.add("hidden");
   container.classList.toggle("hidden", options.length === 0);
-  selectedSymptoms.clear();
-
+  const who = species === "Poultry" ? poultryType.toLowerCase() : species.toLowerCase();
   byId("symptom-prompt").textContent = options.length
-    ? `Common signs reported in ${age === "young" ? "young" : age === "juvenile" ? "juvenile" : "adult"} ${poultryType ? poultryType.toLowerCase() : species.toLowerCase()}:`
+    ? `Common signs reported in ${age === "young" ? "young" : age === "juvenile" ? "juvenile" : "adult"} ${who}. Select at least one:`
     : species === "Poultry" && age
       ? "Choose broiler or layer to see relevant signs."
       : "Choose pet type and age to see relevant signs.";
-
-  options.forEach((symptom) => {
+  const addChip = (label, onClick) => {
     const button = document.createElement("button");
     button.type = "button";
-    button.className =
-      "chip text-xs px-2.5 py-1.5 rounded-full border border-slate-300 bg-slate-100 hover:bg-slate-200 text-slate-700 transition";
-    button.textContent = symptom;
+    button.className = "chip text-xs px-2.5 py-1.5 rounded-full border border-slate-300 bg-slate-100 hover:bg-slate-200 text-slate-700 transition";
+    button.textContent = label;
     button.setAttribute("aria-pressed", "false");
-    button.addEventListener("click", () => {
-      if (selectedSymptoms.has(symptom)) {
-        selectedSymptoms.delete(symptom);
-        button.classList.remove(
-          "bg-brand-600",
-          "text-white",
-          "border-brand-600",
-        );
-        button.classList.add(
-          "bg-slate-100",
-          "text-slate-700",
-          "border-slate-300",
-        );
-        button.setAttribute("aria-pressed", "false");
-      } else {
-        selectedSymptoms.add(symptom);
-        button.classList.add("bg-brand-600", "text-white", "border-brand-600");
-        button.classList.remove(
-          "bg-slate-100",
-          "text-slate-700",
-          "border-slate-300",
-        );
-        button.setAttribute("aria-pressed", "true");
-      }
-    });
+    button.addEventListener("click", () => onClick(button));
     container.append(button);
+  };
+  options.forEach(({ id, label }) =>
+    addChip(label, (button) => {
+      const on = !selectedSigns.has(id);
+      if (on) selectedSigns.add(id);
+      else selectedSigns.delete(id);
+      setChip(button, on);
+    }),
+  );
+  if (options.length)
+    addChip("Other (type it)", (button) => {
+      otherOn = !otherOn;
+      setChip(button, otherOn);
+      byId("other-wrap").classList.toggle("hidden", !otherOn);
+      if (otherOn) byId("symptom-text").focus();
+    });
+}
+
+function missingFields() {
+  const species = byId("pet-species").value;
+  const missing = [];
+  if (!species) missing.push("Pet type");
+  if (!byId("pet-age").value) missing.push("Age category");
+  if (species === "Poultry" && !byId("poultry-type").value) missing.push("Poultry type (broiler or layer)");
+  if (!(Number(byId("pet-weight").value) > 0)) missing.push("Approximate weight");
+  if (!selectedSigns.size && !otherOn) missing.push("At least one sign (tap the signs you see)");
+  if (otherOn && !byId("symptom-text").value.trim()) missing.push("Your own description under “Other”");
+  return missing;
+}
+
+function showFormAlert(missing) {
+  const box = byId("form-alert");
+  box.replaceChildren();
+  box.classList.toggle("hidden", !missing.length);
+  if (!missing.length) return;
+  const heading = document.createElement("p");
+  heading.className = "font-bold mb-1";
+  heading.textContent = "Please complete all fields before analysing:";
+  const list = document.createElement("ul");
+  list.className = "list-disc list-inside";
+  missing.forEach((name) => {
+    const item = document.createElement("li");
+    item.textContent = name;
+    list.append(item);
   });
+  box.append(heading, list);
+  box.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
 function runHealthCheck(event) {
   event.preventDefault();
+  const missing = missingFields();
+  showFormAlert(missing);
+  if (missing.length) return;
   const species = byId("pet-species").value;
   const age = byId("pet-age").selectedOptions[0].textContent.trim();
   const poultryType = species === "Poultry" ? byId("poultry-type").value : "";
-  const weight = byId("pet-weight").value.trim() || "Not specified";
-  const description = byId("symptom-text").value.trim();
-  const symptoms = [...selectedSymptoms, description].filter(Boolean);
-  const text = symptoms.join(" ").toLowerCase();
-  const urgent =
-    /collapse|unresponsive|possible toxin|poison|no droppings|difficulty breathing|gasping|sudden deaths|unable to urinate|difficulty urinating|bloated abdomen|bloody droppings/.test(
-      text,
-    );
-  const caution =
-    /vomit|diarrhea|weak|poor feeding|not eating|reduced appetite|limp|pain|discharge|drop in/.test(
-      text,
-    );
-  const severity = urgent ? "RED" : caution ? "YELLOW" : "GREEN";
-  const title = urgent
-    ? "Urgent veterinary assessment"
-    : caution
-      ? "Contact a veterinarian promptly"
-      : "No urgent signs selected";
+  const weight = `${byId("pet-weight").value} ${byId("pet-weight-unit").value}`;
+  const other = otherOn ? byId("symptom-text").value.trim() : "";
+  const signs = [...[...selectedSigns].map((id) => SIGNS[id][0]), other && `Other: ${other}`].filter(Boolean);
+  const { code, noOpen } = triage(species, [...selectedSigns], other);
+  const urgent = code === "RED";
+  const caution = code === "ORANGE";
+  const title = urgent ? "Urgent veterinary assessment" : caution ? "Contact a veterinarian promptly" : "No urgent signs selected";
   const explanation = urgent
     ? "One or more reported signs can indicate an emergency. Contact a veterinarian now. This screen cannot diagnose the cause or rule out serious illness."
     : caution
@@ -327,11 +120,8 @@ function runHealthCheck(event) {
   window.setTimeout(() => {
     byId("health-check-loading").classList.add("hidden");
     byId("health-check-result").classList.remove("hidden");
-    const banner = byId("severity-banner");
-    banner.className = `p-4 rounded-xl text-white font-bold flex items-center justify-between shadow-md ${urgent ? "bg-red-600" : caution ? "bg-amber-500" : "bg-emerald-600"}`;
-    byId("severity-icon").className =
-      `fa-solid ${urgent ? "fa-triangle-exclamation" : caution ? "fa-circle-exclamation" : "fa-circle-check"} text-2xl`;
-    byId("severity-code").textContent = `URGENCY LEVEL: ${severity}`;
+    byId("severity-banner").className = `p-4 rounded-xl text-white font-bold flex items-center justify-between shadow-md ${urgent ? "bg-red-600" : caution ? "bg-orange-500" : "bg-emerald-600"}`;
+    byId("severity-icon").className = `fa-solid ${urgent ? "fa-triangle-exclamation" : caution ? "fa-circle-exclamation" : "fa-circle-check"} text-2xl`;
     byId("severity-title").textContent = title;
     byId("health-check-explanation").textContent = explanation;
     const firstAidList = byId("first-aid-steps");
@@ -340,21 +130,14 @@ function runHealthCheck(event) {
       "Keep the animal calm and avoid giving human medicines.",
       "Record when the signs began and any recent feed, medication, or exposure changes.",
       "Contact a veterinarian urgently for severe, worsening, or breathing-related signs.",
+      ...(noOpen ? ["Do not open, skin or move a dead animal showing these signs. Keep people and other animals away and call a veterinarian now."] : []),
     ].forEach((step) => {
       const item = document.createElement("li");
       item.className = "leading-tight";
       item.textContent = step;
       firstAidList.append(item);
     });
-    currentHealthResult = {
-      species,
-      age,
-      poultryType,
-      weight,
-      symptoms: symptoms.join(", ") || "None selected",
-      severity,
-      title,
-    };
+    currentHealthResult = { species, age, poultryType, weight, signs: signs.join(", "), code, title };
   }, 250);
 }
 
@@ -363,25 +146,18 @@ function dispatchWhatsApp() {
     window.alert("Please run the health check first.");
     return;
   }
-  const result = currentHealthResult;
-  const text = `AUBEL VET HEALTH SUMMARY\nPet: ${result.species}${result.poultryType ? ` (${result.poultryType})` : ""}, ${result.age}, ${result.weight}\nUrgency: ${result.severity} - ${result.title}\nReported signs: ${result.symptoms}`;
-  window.open(
-    `https://wa.me/2348108710868?text=${encodeURIComponent(text)}`,
-    "_blank",
-    "noopener,noreferrer",
-  );
+  const r = currentHealthResult;
+  const text = `AUBEL VET HEALTH SUMMARY\nPet: ${r.species}${r.poultryType ? ` (${r.poultryType})` : ""}, ${r.age}, ${r.weight}\nCODE: ${r.code}\nReported signs: ${r.signs}`;
+  window.open(`https://wa.me/2348108710868?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
 }
 
-function switchTab(tabName) {
-  document
-    .querySelectorAll(".tab-content")
-    .forEach((tab) => tab.classList.add("hidden"));
-  document
-    .querySelectorAll(".tab-btn")
-    .forEach((button) =>
-      button.classList.remove("border-brand-500", "bg-brand-50"),
-    );
-  byId(`tab-${tabName}`).classList.remove("hidden");
+function switchTab(tabName, forceOpen) {
+  const panel = byId(`tab-${tabName}`);
+  const open = forceOpen || panel.classList.contains("hidden");
+  document.querySelectorAll(".tab-content").forEach((tab) => tab.classList.add("hidden"));
+  document.querySelectorAll(".tab-btn").forEach((button) => button.classList.remove("border-brand-500", "bg-brand-50"));
+  if (!open) return;
+  panel.classList.remove("hidden");
   byId(`tab-btn-${tabName}`).classList.add("border-brand-500", "bg-brand-50");
 }
 
@@ -406,7 +182,7 @@ function savePetRecord(event) {
       "Please accept the terms and conditions before saving.",
     );
     terms.reportValidity();
-    switchTab("pricing");
+    switchTab("pricing", true);
     return;
   }
   terms.setCustomValidity("");
@@ -481,7 +257,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateAnimalFields();
   });
   byId("pet-age").addEventListener("change", updateAnimalFields);
-  byId("poultry-type").addEventListener("change", updateSymptoms);
+  byId("poultry-type").addEventListener("change", updateSigns);
   byId("terms-toggle").addEventListener("click", toggleTerms);
   document
     .querySelectorAll('input[name="previous-vaccination"]')

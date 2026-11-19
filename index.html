@@ -1,15 +1,15 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
-      Aubel Veterinary on the Go | Mobile Vet Doctor, Ogun & Lagos | 24/7
+      Aubel Veterinary on the Go | Mobile Vet Doctor, Ogun &amp; Lagos | 24/7
       Emergency House Calls
     </title>
     <meta
       name="description"
-      content="Aubel Veterinary on the Go - Licensed mobile veterinary doctor in Ogun State & Lagos. 24/7 emergency house calls for dogs, cats, poultry, goats, sheep, cattle, rabbits. Dog vaccination, High survival rate of Parvo treatment, deworming, treatment. Fast response in Ota, Sango, Abeokuta, Ikeja, Agege, Lekki. Book now."
+      content="Aubel Veterinary on the Go - Licensed mobile veterinary doctor in Ogun State &amp; Lagos. 24/7 emergency house calls for dogs, cats, poultry, goats, sheep, cattle, rabbits. Dog vaccination, High survival rate of Parvo treatment, deworming, treatment. Fast response in Ota, Sango, Abeokuta, Ikeja, Agege, Lekki. Book now."
     />
     <meta name="author" content="Aubel Veterinary on the Go - Dr. AUBEL" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
@@ -32,11 +32,11 @@
     <meta property="og:url" content="https://share.google/xEIOF1UH0TRMAoo2C" />
     <meta
       property="og:title"
-      content="Aubel Veterinary on the Go | Mobile Vet Doctor Ota, Ogun & Lagos"
+      content="Aubel Veterinary on the Go | Mobile Vet Doctor Ota, Ogun &amp; Lagos"
     />
     <meta
       property="og:description"
-      content="Licensed mobile vet - 24/7 emergency house calls for dogs, cats & poultry in Ota, Ogun & Lagos. Instant symptom checker, cost estimator, and direct vet dispatch."
+      content="Licensed mobile vet - 24/7 emergency house calls for dogs, cats &amp; poultry in Ota, Ogun &amp; Lagos. Instant signs checker, cost estimator, and direct vet dispatch."
     />
     <meta
       property="og:image"
@@ -44,7 +44,7 @@
     />
     <meta
       name="twitter:title"
-      content="Aubel Veterinary on the Go | Mobile Vet Ogun & Lagos"
+      content="Aubel Veterinary on the Go | Mobile Vet Ogun &amp; Lagos"
     />
     <meta
       name="twitter:description"
@@ -135,7 +135,7 @@
                 >
               </h1>
               <p class="text-[11px] text-slate-500">
-                Mobile Vet Services • Ogun & Lagos State
+                Mobile Vet Services • Ogun &amp; Lagos State
               </p>
             </div>
           </a>
@@ -171,10 +171,10 @@
           24/7 Veterinary Health Checker
         </span>
         <h2 class="font-serif text-2xl md:text-4xl font-bold mb-2 leading-snug">
-          Get a Veterinary Health Check & Direct Vet Dispatch
+          Get a Veterinary Health Check &amp; Direct Vet Dispatch
         </h2>
         <p class="text-xs md:text-sm text-slate-300 max-w-lg mx-auto mb-4">
-          Don't guess with your pet's life. Check symptoms immediately, receive
+          Don't guess with your pet's life. Check signs immediately, receive
           clear urgency guidance, and dispatch Dr. AUBEL to your home, anywhere
           in Ogun or Lagos State.
         </p>
@@ -182,7 +182,7 @@
     </section>
 
     <main class="max-w-3xl mx-auto px-4 -mt-4 relative z-20 space-y-6">
-      <!-- Pet emergency health check and symptom checker -->
+      <!-- Pet emergency health check and signs checker -->
       <section
         class="bg-white rounded-2xl shadow-xl border border-slate-200/80 overflow-hidden"
         id="health-check-section"
@@ -194,7 +194,7 @@
             <i class="fa-solid fa-stethoscope text-xl"></i>
             <div>
               <h3 class="font-bold text-base md:text-lg leading-tight">
-                Pet Health Checker & Symptom Review
+                Pet Health Checker &amp; Signs Review
               </h3>
               <p class="text-emerald-100 text-xs">
                 Instant Guidance Before Vet Arrives/Clinic Visit
@@ -203,11 +203,11 @@
           </div>
         </div>
 
-        <form id="health-check-form" class="p-5 space-y-4">
-          <!-- Species & Basic Info -->
+        <form id="health-check-form" novalidate class="p-5 space-y-4">
+          <!-- Species &amp; Basic Info -->
           <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1"
+              <label for="pet-species" class="block text-xs font-semibold text-slate-700 mb-1"
                 >Pet Type</label
               >
               <select
@@ -226,7 +226,7 @@
               </select>
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1"
+              <label for="pet-age" class="block text-xs font-semibold text-slate-700 mb-1"
                 >Age Category</label
               >
               <select
@@ -242,16 +242,10 @@
               </select>
             </div>
             <div class="col-span-2 md:col-span-1">
-              <label class="block text-xs font-semibold text-slate-700 mb-1"
-                >Approx Weight</label
+              <label for="pet-weight" class="block text-xs font-semibold text-slate-700 mb-1"
+                >Approx Weight (required)</label
               >
-              <input
-                type="text"
-                id="pet-weight"
-                disabled
-                placeholder="e.g. 2 kg"
-                class="w-full text-xs md:text-sm p-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none"
-              />
+              <div class="flex gap-1.5"><input type="number" id="pet-weight" min="0.1" step="any" inputmode="decimal" required placeholder="e.g. 2" class="w-full text-xs md:text-sm p-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none" /><select id="pet-weight-unit" aria-label="Weight unit" class="text-xs md:text-sm p-2.5 bg-slate-50 border border-slate-300 rounded-lg"><option value="kg">kg</option><option value="g">g</option></select></div>
             </div>
           </div>
 
@@ -271,10 +265,10 @@
             </select>
           </div>
 
-          <!-- Quick-Select Symptom Chips -->
+          <!-- Quick-Select Sign Chips -->
           <div>
             <label class="block text-xs font-semibold text-slate-700 mb-1.5"
-              >Quick-Select Common Symptoms (Tap to add)</label
+              >Select the signs you see (required)</label
             >
             <p id="symptom-prompt" class="text-xs text-slate-500">
               Choose pet type and age to see relevant signs.
@@ -284,55 +278,13 @@
               id="symptom-chips"
               aria-live="polite"
             >
-              <button
-                type="button"
-                onclick="toggleSymptom('Severe Vomiting / Diarrhea')"
-                class="chip text-xs px-2.5 py-1.5 rounded-full border border-slate-300 bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
-              >
-                🤢 Severe Vomiting/Diarrhea
-              </button>
-              <button
-                type="button"
-                onclick="toggleSymptom('Bloated Abdomen & Restlessness')"
-                class="chip text-xs px-2.5 py-1.5 rounded-full border border-slate-300 bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
-              >
-                🎈 Bloated Belly
-              </button>
-              <button
-                type="button"
-                onclick="toggleSymptom('Suspected Poisoning / Chemicals')"
-                class="chip text-xs px-2.5 py-1.5 rounded-full border border-slate-300 bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
-              >
-                ☠ Poisoning Suspicion
-              </button>
-              <button
-                type="button"
-                onclick="toggleSymptom('Unable to Urinate or Sting')"
-                class="chip text-xs px-2.5 py-1.5 rounded-full border border-slate-300 bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
-              >
-                🚫 Inability to Urinate
-              </button>
-              <button
-                type="button"
-                onclick="toggleSymptom('Extreme Lethargy / Unresponsive')"
-                class="chip text-xs px-2.5 py-1.5 rounded-full border border-slate-300 bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
-              >
-                💤 Lethargy / Collapse
-              </button>
-              <button
-                type="button"
-                onclick="toggleSymptom('Heavy Panting / Heatstroke')"
-                class="chip text-xs px-2.5 py-1.5 rounded-full border border-slate-300 bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
-              >
-                ☀ Heavy Panting / Heat
-              </button>
             </div>
           </div>
 
           <!-- Free Text Description -->
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1"
-              >Describe detailed symptoms or observations</label
+          <div id="other-wrap" class="hidden">
+            <label for="symptom-text" class="block text-xs font-semibold text-slate-700 mb-1"
+              >Describe the other signs or observations you see (required)</label
             >
             <textarea
               id="symptom-text"
@@ -342,14 +294,14 @@
             ></textarea>
           </div>
 
-          <!-- Submit Button -->
+          <div id="form-alert" role="alert" class="hidden p-3 rounded-lg bg-red-50 border border-red-300 text-red-800 text-xs"></div>
+<!-- Submit Button -->
           <button
             type="submit"
             id="health-check-btn"
             class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2"
           >
-            <i class="fa-solid fa-microchip"></i> Analyze Symptoms & Get Health
-            Guidance
+            <i class="fa-solid fa-microchip"></i> Analyze Signs &amp; Get Health Guidance
           </button>
         </form>
 
@@ -359,11 +311,11 @@
             class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-brand-500 border-t-transparent"
           ></div>
           <p class="text-xs text-slate-600 font-medium">
-            Analyzing symptoms with emergency health protocol...
+            Analyzing signs with emergency health protocol...
           </p>
         </div>
 
-        <!-- RESULT CARD (SUPPORTING FEATURE 1 & 2) -->
+        <!-- RESULT CARD (SUPPORTING FEATURE 1 &amp; 2) -->
         <div
           id="health-check-result"
           class="hidden border-t border-slate-200 p-5 bg-slate-50 space-y-4"
@@ -387,11 +339,7 @@
                 </h4>
               </div>
             </div>
-            <span
-              id="severity-code"
-              class="px-2.5 py-1 rounded bg-black/20 text-xs font-mono uppercase"
-              >--</span
-            >
+            
           </div>
 
           <!-- Immediate veterinary guidance -->
@@ -402,7 +350,7 @@
               class="text-xs font-bold uppercase text-slate-500 tracking-wider flex items-center gap-1.5"
             >
               <i class="fa-solid fa-clipboard-list text-brand-600"></i> Clinical
-              Summary & Next Steps
+              Summary &amp; Next Steps
             </h5>
             <p
               id="health-check-explanation"
@@ -430,9 +378,9 @@
             </ul>
           </div>
 
-          <!-- SUPPORTING FEATURE 3: One-Tap WhatsApp Dispatch & Call -->
+          <!-- SUPPORTING FEATURE 3: One-Tap WhatsApp Dispatch &amp; Call -->
           <div class="pt-2 flex flex-col sm:flex-row gap-2">
-            <button
+            <button type="button"
               id="whatsapp-dispatch-btn"
               class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs md:text-sm font-bold py-3 px-4 rounded-xl shadow flex items-center justify-center gap-2"
             >
@@ -452,17 +400,17 @@
 
       <!-- NAVIGATION TABS FOR SUPPORTING FEATURES -->
       <div class="grid grid-cols-2 gap-2">
-        <button
+        <button type="button"
           onclick="switchTab('pricing')"
           id="tab-btn-pricing"
-          class="tab-btn bg-white border border-slate-200 hover:border-brand-500 p-3 rounded-xl text-center shadow-sm transition active-tab"
+          class="tab-btn bg-white border border-slate-200 hover:border-brand-500 p-3 rounded-xl text-center shadow-sm transition"
         >
           <i
             class="fa-solid fa-calculator text-brand-600 text-lg mb-1 block"
           ></i>
           <span class="text-xs font-bold text-slate-800">Cost Estimator</span>
         </button>
-        <button
+        <button type="button"
           onclick="switchTab('records')"
           id="tab-btn-records"
           class="tab-btn bg-white border border-slate-200 hover:border-brand-500 p-3 rounded-xl text-center shadow-sm transition"
@@ -479,14 +427,14 @@
       <!-- TAB CONTENT 1: SUPPORTING FEATURE 4 (INSTANT COST ESTIMATOR) -->
       <div
         id="tab-pricing"
-        class="tab-content bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4"
+        class="tab-content hidden bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4"
       >
         <div class="border-b border-slate-100 pb-3">
           <h3 class="font-serif font-bold text-lg text-navy-900">
             Instant Veterinary Fee Estimator
           </h3>
           <p class="text-xs text-slate-500">
-            Transparent home-visit & consultation estimates
+            Transparent home-visit &amp; consultation estimates
           </p>
         </div>
 
@@ -500,7 +448,7 @@
               onchange="calculateFee()"
               class="w-full text-xs p-2.5 bg-slate-50 border border-slate-300 rounded-lg"
             >
-              <option value="ota">Ota & Environs (Ogun State)</option>
+              <option value="ota">Ota &amp; Environs (Ogun State)</option>
               <option value="abeokuta">Abeokuta / Sagamu Hubs</option>
               <option value="lagos-mainland">
                 Lagos Mainland (Ikeja, Agege, Alimosho)
@@ -522,7 +470,7 @@
               </option>
               <option value="vaccine">Vaccination</option>
               <option value="emergency">Emergency Visit</option>
-              <option value="deworm">Deworming & Parasite Control</option>
+              <option value="deworm">Deworming &amp; Parasite Control</option>
             </select>
           </div>
         </div>
@@ -563,7 +511,7 @@
         </div>
       </div>
 
-      <!-- TAB CONTENT 2: SUPPORTING FEATURE 5 (DIGITAL VACCINATION & RECORD KEEPER) -->
+      <!-- TAB CONTENT 2: SUPPORTING FEATURE 5 (DIGITAL VACCINATION &amp; RECORD KEEPER) -->
       <div
         id="tab-records"
         class="tab-content hidden bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4"
@@ -717,7 +665,7 @@
           <span>•</span>
           <span>Licensed Mobile Vet</span>
           <span>•</span>
-          <span>Ogun & Lagos</span>
+          <span>Ogun &amp; Lagos</span>
         </div>
 
         <p class="text-[10px] text-slate-600">
@@ -753,6 +701,7 @@
     </div>
 
     <!-- JAVASCRIPT LOGIC -->
-    <script src="script.js" defer></script>
+    <script src="triage.js" defer></script>
+<script src="script.js" defer></script>
   </body>
 </html>
