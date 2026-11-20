@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>My Account | Aubel Vet On The Go</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico" />
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="tailwind.config.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans">
+<header class="bg-white border-b border-slate-200">
+<div class="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
+<a href="index.html" class="flex items-center gap-2 no-underline text-inherit" aria-label="Aubel Vet, back to home">
+<img src="aubel-logo-round.png" alt="Aubel Veterinary logo" class="w-10 h-10 rounded-full ring-1 ring-slate-200 object-cover" />
+<span class="font-serif font-bold text-lg text-navy-900">Aubel Vet</span>
+</a>
+<a href="index.html" class="text-xs font-semibold text-brand-600">Back to site</a>
+</div>
+</header>
+<main class="max-w-2xl mx-auto p-4 space-y-4">
+
+<section id="auth" class="hidden bg-white border border-slate-200 rounded-2xl p-5 space-y-4">
+<h1 class="font-serif font-bold text-xl text-navy-900">Log in or sign up</h1>
+<p class="text-xs text-slate-600">Enter your email and we will send you a code. No password needed. Your pet records are private to you and your vet.</p>
+<form id="send" class="space-y-2">
+<label for="email" class="block text-xs font-semibold">Email</label>
+<input id="email" type="email" required autocomplete="email" placeholder="you@example.com" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
+<button type="submit" class="bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold py-2.5 px-4 rounded-lg">Send code</button>
+</form>
+<form id="verify" class="hidden space-y-2">
+<label for="code" class="block text-xs font-semibold">Code from your email</label>
+<input id="code" inputmode="numeric" autocomplete="one-time-code" maxlength="10" required class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
+<button type="submit" class="bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold py-2.5 px-4 rounded-lg">Verify and continue</button>
+</form>
+<p id="auth-msg" role="status" class="text-xs mt-2"></p>
+<details class="text-xs">
+<summary class="cursor-pointer text-slate-500">Admin: use a password instead</summary>
+<form id="pw-form" class="space-y-2 mt-2">
+<input id="pw-email" type="email" required autocomplete="username" placeholder="Admin email" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
+<input id="pw" type="password" required autocomplete="current-password" placeholder="Password" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
+<button type="submit" class="bg-navy-900 text-white text-xs font-bold py-2.5 px-4 rounded-lg">Log in</button>
+</form>
+</details>
+</section>
+
+<div id="dash" class="hidden space-y-4">
+<div class="flex items-center justify-between text-xs">
+<p>Signed in as <strong id="who"></strong></p>
+<button id="signout" type="button" class="font-semibold text-red-700">Sign out</button>
+</div>
+
+<section class="bg-white border border-slate-200 rounded-2xl p-5 space-y-3">
+<h2 class="font-bold text-sm">Your details</h2>
+<form id="profile-form" class="space-y-2">
+<input id="full_name" required placeholder="Full name" autocomplete="name" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
+<input id="phone" type="tel" required placeholder="Phone number" autocomplete="tel" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
+<input id="address" required placeholder="Owner's address" autocomplete="street-address" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
+<button type="submit" class="bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold py-2.5 px-4 rounded-lg">Save details</button>
+<p id="profile-msg" role="status"></p>
+</form>
+</section>
+
+<section class="bg-white border border-slate-200 rounded-2xl p-5 space-y-3">
+<h2 class="font-bold text-sm">Your pets and animals</h2>
+<div id="pets" class="space-y-2"></div>
+<form id="pet-form" class="space-y-2 border-t border-slate-200 pt-3">
+<p class="text-xs font-semibold">Add another pet or animal</p>
+<div class="grid grid-cols-2 gap-2">
+<input id="p-name" required placeholder="Name" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
+<select id="p-species" required class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg">
+<option value="">Species</option><option>Dog</option><option>Cat</option><option>Sheep</option><option>Goat</option><option>Rabbit</option><option>Poultry</option><option>Cattle</option>
+</select>
+<input id="p-breed" placeholder="Breed (optional)" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
+<select id="p-age" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg">
+<option value="">Age</option><option value="young">Under 6 months</option><option value="juvenile">6-12 months</option><option value="adult">Over 1 year</option>
+</select>
+</div>
+<label class="text-xs block"><input id="p-vacc" type="checkbox" /> Previously vaccinated</label>
+<div id="vacc-fields" class="hidden grid grid-cols-2 gap-2">
+<input id="p-vname" placeholder="Vaccine given" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
+<input id="p-vdate" type="date" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
+</div>
+<button type="submit" class="bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold py-2.5 px-4 rounded-lg">Add pet</button>
+<p id="pet-msg" role="status"></p>
+</form>
+</section>
+
+<section id="admin-sec" class="hidden bg-white border-2 border-navy-900 rounded-2xl p-5 space-y-3">
+<h2 class="font-bold text-sm">Admin: clients and pets (newest first)</h2>
+<p id="admin-msg" role="status"></p>
+<div id="registry" class="space-y-2"></div>
+</section>
+</div>
+</main>
+<script src="vendor/supabase.js"></script>
+<script src="cloud.js"></script>
+<script src="account.js"></script>
+</body>
+</html>

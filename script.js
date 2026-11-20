@@ -1,6 +1,7 @@
 let selectedSigns = new Set();
 let otherOn = false;
 let currentHealthResult = null;
+let recordSaved = false;
 
 const byId = (id) => document.getElementById(id);
 const CHIP_OFF = ["bg-slate-100", "text-slate-700", "border-slate-300"];
@@ -141,11 +142,30 @@ function runHealthCheck(event) {
   }, 250);
 }
 
+function requireRecord() {
+  const missing = [];
+  if (!byId("terms-accepted").checked) missing.push("open Cost Estimator and tick the terms and conditions");
+  if (!recordSaved) missing.push("fill in the Digital Health Record and press Save Health Record");
+  if (missing.length) window.alert(`Before you continue, please ${missing.join(", and ")}.`);
+  return !missing.length;
+}
+document.addEventListener("click", (event) => {
+  if (event.target.closest("a[data-gated]") && !requireRecord()) event.preventDefault();
+});
+try {
+  sb.auth.getSession().then(({ data: { session } }) => {
+    if (!session) return;
+    byId("owner-email").value = session.user.email;
+    byId("owner-email").readOnly = true;
+  });
+} catch (e) { /* cloud script not loaded */ }
+
 function dispatchWhatsApp() {
   if (!currentHealthResult) {
     window.alert("Please run the health check first.");
     return;
   }
+  if (!requireRecord()) return;
   const r = currentHealthResult;
   const text = `AUBEL VET HEALTH SUMMARY\nPet: ${r.species}${r.poultryType ? ` (${r.poultryType})` : ""}, ${r.age}, ${r.weight}\nCODE: ${r.code}\nReported signs: ${r.signs}`;
   window.open(`https://wa.me/2348108710868?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
@@ -174,7 +194,7 @@ function calculateFee() {
     `₦${base.toLocaleString()} - ₦${(base + 5000).toLocaleString()}`;
 }
 
-function savePetRecord(event) {
+async function savePetRecord(event) {
   event.preventDefault();
   const terms = byId("terms-accepted");
   if (!terms.checked) {
@@ -191,6 +211,32 @@ function savePetRecord(event) {
     'input[name="previous-vaccination"]:checked',
   ).value;
   const lastDate = vaccination === "yes" ? byId("rec-date").value : "";
+  const status = byId("record-status");
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) {
+    status.className = "text-xs mt-2 text-red-700";
+    status.replaceChildren("Please ");
+    const link = document.createElement("a");
+    link.href = "account.html";
+    link.className = "underline font-semibold";
+    link.textContent = "log in or sign up";
+    status.append(link, " first. Your record is saved privately to your dashboard after email verification.");
+    return;
+  }
+  const owner = { full_name: byId("owner-name").value.trim(), phone: byId("owner-phone").value.trim(), address: byId("owner-address").value.trim() };
+  const saved = await sb.from("profiles").update(owner).eq("id", session.user.id);
+  const pet = await sb.from("pets").insert({
+    owner_id: session.user.id, name: byId("rec-name").value.trim(), species: byId("rec-species").value, breed: byId("rec-breed").value.trim() || null,
+    vaccinated: vaccination === "yes", vaccine_name: vaccination === "yes" ? byId("rec-vaccine").value.trim() || null : null, vaccine_date: lastDate || null,
+  });
+  if (saved.error || pet.error) {
+    status.className = "text-xs mt-2 text-red-700";
+    status.textContent = `Could not save: ${(saved.error || pet.error).message}`;
+    return;
+  }
+  recordSaved = true;
+  status.className = "text-xs mt-2 text-emerald-700";
+  status.textContent = "Saved to your private dashboard. You can add another pet by changing the pet details and saving again.";
   const baseline = new Date();
   const dateAfter = (days) => {
     const date = new Date(baseline);
