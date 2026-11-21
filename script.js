@@ -237,23 +237,37 @@ async function savePetRecord(event) {
     return;
   }
 
-  const vaccination = document.querySelector(
-    'input[name="previous-vaccination"]:checked',
-  ).value;
+  const status = byId("record-status");
+  status.textContent = "";
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return beginRecordVerification();
+  await finishRecord(session);
+}
+
+async function beginRecordVerification() {
+  const email = byId("owner-email").value.trim().toLowerCase();
+  const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true, data: { full_name: byId("owner-name").value.trim() } } });
+  if (error) return fieldError(byId("owner-email"), error.status === 429 ? "Too many attempts. Please wait a minute and try again." : error.message);
+  byId("record-verify").classList.remove("hidden");
+  byId("record-code").focus();
+}
+
+async function verifyRecordEmail() {
+  const code = byId("record-code");
+  clearFieldError(code);
+  if (!code.value.trim()) return fieldError(code, "This field is required.");
+  const { data, error } = await sb.auth.verifyOtp({ email: byId("owner-email").value.trim().toLowerCase(), token: code.value.trim(), type: "email" });
+  if (error) return fieldError(code, error.message);
+  byId("record-verify").classList.add("hidden");
+  code.value = "";
+  await finishRecord(data.session);
+}
+
+async function finishRecord(session) {
+  const vaccination = document.querySelector('input[name="previous-vaccination"]:checked').value;
   const lastDate = vaccination === "yes" ? byId("rec-date").value : "";
   const status = byId("record-status");
-  const { data: { session } } = await sb.auth.getSession();
-  if (!session) {
-    status.className = "text-xs mt-2 text-red-700";
-    status.replaceChildren("Please ");
-    const link = document.createElement("a");
-    link.href = "account.html";
-    link.className = "underline font-semibold";
-    link.textContent = "log in or sign up";
-    status.append(link, " first. Your record is saved privately to your dashboard after email verification.");
-    return;
-  }
-  const owner = { full_name: byId("owner-name").value.trim(), phone: byId("owner-phone").value.trim(), address: byId("owner-address").value.trim() };
+  const owner = { full_name: byId("owner-name").value.trim(), phone: ngPhone.value(byId("owner-phone")), address: byId("owner-address").value.trim() };
   const saved = await sb.from("profiles").update(owner).eq("id", session.user.id);
   const pet = await sb.from("pets").insert({
     owner_id: session.user.id, name: byId("rec-name").value.trim(), species: byId("rec-species").value, breed: byId("rec-breed").value.trim() || null,
@@ -267,7 +281,7 @@ async function savePetRecord(event) {
   recordSaved = true;
   byId("gate-notice").classList.add("hidden");
   status.className = "text-xs mt-2 text-emerald-700";
-  status.textContent = "Saved to your private dashboard. You can add another pet by changing the pet details and saving again.";
+  status.textContent = "Record saved to your private dashboard. You can add another pet by changing the pet details and saving again.";
   const baseline = new Date();
   const dateAfter = (days) => {
     const date = new Date(baseline);
@@ -298,7 +312,16 @@ async function savePetRecord(event) {
     summary.append(paragraph);
   });
   summary.classList.remove("hidden");
+  if (window.refreshMenu) window.refreshMenu();
+  if (currentHealthResult) {
+    const share = byId("whatsapp-dispatch-btn");
+    share.scrollIntoView({ behavior: "smooth", block: "center" });
+    share.focus();
+  } else {
+    status.textContent += " Now run the health check above to get your summary, then share it.";
+  }
 }
+byId("record-verify-btn").addEventListener("click", verifyRecordEmail);
 
 function trackEmergencyCall() {
   // Call links perform the action; this hook remains for existing markup.

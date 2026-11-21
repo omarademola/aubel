@@ -89,3 +89,12 @@ body {
     border-color: #7f1d1d !important;
   }
 }
+
+.menu-panel{position:fixed;top:0;left:0;bottom:0;width:18rem;max-width:85vw;padding:1rem;overflow-y:auto;transform:translateX(-100%);transition:transform .2s ease;z-index:70}
+.menu-panel.open{transform:none}
+.menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:65}
+.menu-dot{position:absolute;top:-4px;right:-4px;width:10px;height:10px;border-radius:50%;background:#dc2626}
+@media (min-width:768px){
+  .menu-panel{top:4.5rem;left:auto;right:1rem;bottom:auto;width:16rem;border-radius:.75rem;transform:none;opacity:0;visibility:hidden;transition:opacity .15s ease}
+  .menu-panel.open{opacity:1;visibility:visible}
+}

@@ -1,4 +1,7 @@
-tailwind.config = {
+// Works in the browser (Tailwind CDN) and in VS Code (Tailwind extension runs it in Node).
+(function () {
+  const config = {
+  content: ["./*.html", "./*.js"],
   theme: {
     extend: {
       colors: {
@@ -29,3 +32,6 @@ tailwind.config = {
     },
   },
 };
+  if (typeof tailwind !== "undefined") tailwind.config = config;
+  if (typeof module !== "undefined") module.exports = config;
+})();
