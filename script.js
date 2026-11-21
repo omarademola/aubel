@@ -142,12 +142,42 @@ function runHealthCheck(event) {
   }, 250);
 }
 
+function showGate(items) {
+  const notice = byId("gate-notice");
+  notice.replaceChildren();
+  notice.classList.toggle("hidden", !items.length);
+  if (!items.length) return true;
+  const title = document.createElement("p");
+  title.className = "font-bold mb-1";
+  title.textContent = "Before you continue, please complete:";
+  const list = document.createElement("ul");
+  list.className = "list-disc list-inside space-y-1";
+  items.forEach(([text, tab]) => {
+    const item = document.createElement("li");
+    item.append(`${text} `);
+    if (tab) {
+      const go = document.createElement("button");
+      go.type = "button";
+      go.className = "underline font-semibold";
+      go.textContent = "Open it";
+      go.addEventListener("click", () => {
+        switchTab(tab, true);
+        byId(`tab-${tab}`).scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      item.append(go);
+    }
+    list.append(item);
+  });
+  notice.append(title, list);
+  notice.scrollIntoView({ behavior: "smooth", block: "center" });
+  return false;
+}
+
 function requireRecord() {
-  const missing = [];
-  if (!byId("terms-accepted").checked) missing.push("open Cost Estimator and tick the terms and conditions");
-  if (!recordSaved) missing.push("fill in the Digital Health Record and press Save Health Record");
-  if (missing.length) window.alert(`Before you continue, please ${missing.join(", and ")}.`);
-  return !missing.length;
+  const items = [];
+  if (!byId("terms-accepted").checked) items.push(["Tick the terms and conditions in Cost Estimator.", "pricing"]);
+  if (!recordSaved) items.push(["Fill in the Digital Health Record and press Save Health Record.", "records"]);
+  return showGate(items);
 }
 document.addEventListener("click", (event) => {
   if (event.target.closest("a[data-gated]") && !requireRecord()) event.preventDefault();
@@ -162,7 +192,7 @@ try {
 
 function dispatchWhatsApp() {
   if (!currentHealthResult) {
-    window.alert("Please run the health check first.");
+    showGate([["Run the health check first.", null]]);
     return;
   }
   if (!requireRecord()) return;
@@ -196,16 +226,16 @@ function calculateFee() {
 
 async function savePetRecord(event) {
   event.preventDefault();
+  const form = event.currentTarget || event.target;
+  if (form && form.querySelectorAll && !inlineValidate(form)) return;
   const terms = byId("terms-accepted");
+  clearFieldError(terms);
   if (!terms.checked) {
-    terms.setCustomValidity(
-      "Please accept the terms and conditions before saving.",
-    );
-    terms.reportValidity();
     switchTab("pricing", true);
+    fieldError(terms, "Please tick the terms and conditions, then press Save Health Record again.");
+    terms.scrollIntoView({ behavior: "smooth", block: "center" });
     return;
   }
-  terms.setCustomValidity("");
 
   const vaccination = document.querySelector(
     'input[name="previous-vaccination"]:checked',
@@ -235,6 +265,7 @@ async function savePetRecord(event) {
     return;
   }
   recordSaved = true;
+  byId("gate-notice").classList.add("hidden");
   status.className = "text-xs mt-2 text-emerald-700";
   status.textContent = "Saved to your private dashboard. You can add another pet by changing the pet details and saving again.";
   const baseline = new Date();

@@ -19,8 +19,9 @@ const show = (view) => ["auth", "dash"].forEach((v) => $(v).classList.toggle("hi
 
 async function sendCode(event) {
   event.preventDefault();
+  if (!inlineValidate(event.target)) return;
   const email = $("email").value.trim().toLowerCase();
-  const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
+  const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true, data: $("su-name").value.trim() ? { full_name: $("su-name").value.trim() } : undefined } });
   if (error) return say("auth-msg", friendly(error), true);
   pendingEmail = email;
   $("verify").classList.remove("hidden");
@@ -30,6 +31,7 @@ async function sendCode(event) {
 
 async function verifyCode(event) {
   event.preventDefault();
+  if (!inlineValidate(event.target)) return;
   const { error } = await sb.auth.verifyOtp({ email: pendingEmail, token: $("code").value.trim(), type: "email" });
   if (error) return say("auth-msg", friendly(error), true);
   load();
@@ -37,8 +39,9 @@ async function verifyCode(event) {
 
 async function passwordLogin(event) {
   event.preventDefault();
+  if (!inlineValidate(event.target)) return;
   const { error } = await sb.auth.signInWithPassword({ email: $("pw-email").value.trim(), password: $("pw").value });
-  if (error) return say("auth-msg", friendly(error), true);
+  if (error) return say("auth-msg", /invalid/i.test(error.message) ? "That email or password is not right. If this account never had a password, use the email code above, or set one with the SQL step in the setup guide." : friendly(error), true);
   load();
 }
 
@@ -49,7 +52,7 @@ async function load() {
   $("who").textContent = session.user.email;
   const { data: me } = await sb.from("profiles").select("full_name,phone,address,role").eq("id", session.user.id).single();
   if (me) {
-    $("full_name").value = me.full_name || "";
+    $("full_name").value = me.full_name || (session.user.user_metadata && session.user.user_metadata.full_name) || "";
     $("phone").value = me.phone || "";
     $("address").value = me.address || "";
     $("admin-sec").classList.toggle("hidden", me.role !== "admin");
@@ -60,6 +63,7 @@ async function load() {
 
 async function saveProfile(event) {
   event.preventDefault();
+  if (!inlineValidate(event.target)) return;
   const { data: { session } } = await sb.auth.getSession();
   const { error } = await sb.from("profiles").update({ full_name: $("full_name").value.trim(), phone: $("phone").value.trim(), address: $("address").value.trim() }).eq("id", session.user.id);
   say("profile-msg", error ? friendly(error) : "Details saved.", !!error);
@@ -82,8 +86,14 @@ async function loadPets(userId) {
     );
     const remove = h("button", "text-xs text-red-700 font-semibold", "Remove");
     remove.type = "button";
+    let armed = false;
     remove.onclick = async () => {
-      if (!confirm(`Remove ${p.name}?`)) return;
+      if (!armed) {
+        armed = true;
+        remove.textContent = "Tap again to confirm";
+        setTimeout(() => { armed = false; remove.textContent = "Remove"; }, 4000);
+        return;
+      }
       await sb.from("pets").delete().eq("id", p.id);
       loadPets(userId);
     };
@@ -94,6 +104,7 @@ async function loadPets(userId) {
 
 async function addPet(event) {
   event.preventDefault();
+  if (!inlineValidate(event.target)) return;
   const { data: { session } } = await sb.auth.getSession();
   const vaccinated = $("p-vacc").checked;
   const { error } = await sb.from("pets").insert({
@@ -147,5 +158,13 @@ $("pw-form").addEventListener("submit", passwordLogin);
 $("profile-form").addEventListener("submit", saveProfile);
 $("pet-form").addEventListener("submit", addPet);
 $("p-vacc").addEventListener("change", () => $("vacc-fields").classList.toggle("hidden", !$("p-vacc").checked));
+$("pw-change-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!inlineValidate(event.target)) return;
+  if ($("new-pw").value.length < 10) return say("pw-msg", "Please use at least 10 characters.", true);
+  const { error } = await sb.auth.updateUser({ password: $("new-pw").value });
+  say("pw-msg", error ? friendly(error) : "Password saved. You can now use it under “Admin: use a password instead”.", !!error);
+  if (!error) $("new-pw").value = "";
+});
 $("signout").addEventListener("click", async () => { await sb.auth.signOut(); show("auth"); });
 load();
