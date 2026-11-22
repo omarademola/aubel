@@ -17,6 +17,7 @@
     el.setAttribute("aria-invalid", "true");
   };
   const NAME = /^[\p{L}][\p{L}\p{M} .'-]+$/u;
+  window.nameMeta = (full) => ({ full_name: full, first_name: String(full || "").trim().split(/\s+/)[0] });
   window.ngPhone = {
     digits: (raw) => { let d = String(raw || "").replace(/\D/g, ""); if (d.startsWith("234")) d = d.slice(3); if (d.startsWith("0")) d = d.slice(1); return d.slice(0, 10); },
     format: (d) => [d.slice(0, 3), d.slice(3, 6), d.slice(6, 10)].filter(Boolean).join(" "),

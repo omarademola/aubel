@@ -14,33 +14,32 @@
 <script src="tailwind.config.js"></script>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased pb-12">
-<nav class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+<nav class="sticky top-0 z-40 bg-white/90 border-b border-slate-200 shadow-sm">
 <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
 <div class="flex items-center gap-2">
+<div id="site-menu"></div>
 <a href="index.html" class="flex items-center gap-2 text-inherit no-underline" aria-label="Aubel Vet, back to home">
 <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-md overflow-hidden ring-1 ring-slate-200">
 <img src="aubel-logo-round.png" alt="Aubel Veterinary Logo" class="w-full h-full object-cover rounded-full" />
 </div>
 <div>
-<h1 class="font-serif font-bold text-lg text-navy-900 leading-tight">Aubel Vet
-<span class="text-brand-600 text-xs font-sans font-semibold bg-brand-50 px-1.5 py-0.5 rounded border border-brand-200">ON THE GO</span></h1>
+<h2 class="font-serif font-bold text-lg text-navy-900 leading-tight">Aubel Vet
+<span class="text-brand-600 text-xs font-sans font-semibold bg-brand-50 px-1.5 py-0.5 rounded border border-brand-200">ON THE GO</span></h2>
 <p class="text-[11px] text-slate-500">Mobile Vet Services • Ogun &amp; Lagos State</p>
 </div>
 </a>
 </div>
-<div class="flex items-center gap-2">
-<div id="site-menu"></div>
-</div>
 </div>
 </nav>
 <main class="max-w-2xl mx-auto p-4 space-y-4">
+<h1 id="view-title" class="hidden font-serif font-bold text-2xl text-navy-900">Dashboard</h1>
 <section id="login-client" class="hidden bg-white border border-slate-200 rounded-2xl p-5 space-y-3">
-<h2 class="font-serif font-bold text-xl text-navy-900">Client login / Sign up</h2>
+<h1 class="font-serif font-bold text-2xl text-navy-900">Client login / Sign up</h1>
 <form novalidate id="send" class="space-y-2">
-<label for="su-name" class="block text-xs font-semibold">Your name (new accounts)</label>
-<input type="text" id="su-name" data-type="name" autocomplete="name" placeholder="e.g. Ade Bello" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
+<label for="su-name" class="block text-xs font-semibold">Full Name</label>
+<input type="text" id="su-name" name="name" data-type="name" autocomplete="name" placeholder="e.g. Chinedu Okafor" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
 <label for="email" class="block text-xs font-semibold">Email</label>
-<input id="email" type="email" required autocomplete="email" placeholder="you@example.com" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
+<input type="email" id="email" name="email" required autocomplete="email" placeholder="you@example.com" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
 <button type="submit" class="bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold py-2.5 px-4 rounded-lg">Send code</button>
 </form>
 <form novalidate id="verify" class="hidden space-y-2">
@@ -51,39 +50,36 @@
 <p id="auth-msg" role="status"></p>
 </section>
 <section id="login-admin" class="hidden bg-white border border-slate-200 rounded-2xl p-5 space-y-3">
-<h2 class="font-serif font-bold text-xl text-navy-900">Admin login</h2>
+<h1 class="font-serif font-bold text-2xl text-navy-900">Admin login</h1>
 <form novalidate id="pw-form" class="space-y-2">
 <label for="pw-email" class="block text-xs font-semibold">Email</label>
-<input id="pw-email" type="email" required autocomplete="username" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
+<input type="email" id="pw-email" required autocomplete="username" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
 <label for="pw" class="block text-xs font-semibold">Password</label>
-<input id="pw" type="password" required autocomplete="current-password" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
+<input type="password" id="pw" required autocomplete="current-password" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
 <button type="submit" class="bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold py-2.5 px-4 rounded-lg">Log in</button>
 </form>
 <p id="admin-msg" role="status"></p>
 </section>
 <section id="sec-profile" data-view="dashboard" data-role="client" class="hidden bg-white border border-slate-200 rounded-2xl p-5 space-y-3">
-<h2 class="font-bold text-sm">Your details</h2>
-<form novalidate id="profile-form" class="space-y-2">
+<h2 class="font-bold text-sm">Owner details</h2>
+<div id="owner-table"></div>
+<details class="text-xs"><summary class="cursor-pointer font-semibold">Edit owner details</summary>
+<form novalidate id="profile-form" class="space-y-2 mt-2">
 <input type="text" id="full_name" data-type="name" required placeholder="Full name" autocomplete="name" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
 <div class="flex"><span class="inline-flex items-center px-3 text-xs bg-slate-100 border border-r-0 border-slate-300 rounded-l-lg text-slate-600">+234 (0)</span><input type="tel" id="phone" data-type="ngphone" required inputmode="numeric" autocomplete="tel" maxlength="12" placeholder="810 871 0868" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-r-lg" /></div>
 <input type="text" id="address" required placeholder="Owner’s address" autocomplete="address-line1" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
 <button type="submit" class="bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold py-2.5 px-4 rounded-lg">Save details</button>
 <p id="profile-msg" role="status"></p>
-</form>
+</form></details>
 </section><section id="sec-pets" data-view="dashboard" data-role="client" class="hidden bg-white border border-slate-200 rounded-2xl p-5 space-y-3">
-<h2 class="font-bold text-sm">Your pets and animals</h2>
-<div id="pets" class="space-y-2"></div>
+<h2 class="font-bold text-sm">Your pet(s)/animal(s)</h2>
+<div id="pets" class="space-y-3"></div>
 <form novalidate id="pet-form" class="space-y-2 border-t border-slate-200 pt-3">
-<p class="text-xs font-semibold">Add another pet or animal</p>
-<div class="grid grid-cols-2 gap-2">
-<input type="text" id="p-name" required placeholder="Name" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
-<select id="p-species" required class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg"><option value="">Species</option><option>Dog</option><option>Cat</option><option>Sheep</option><option>Goat</option><option>Rabbit</option><option>Poultry</option><option>Cattle</option></select>
-<input type="text" id="p-breed" placeholder="Breed (optional)" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
-<select id="p-age" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg"><option value="">Age</option><option value="young">Under 6 months</option><option value="juvenile">6-12 months</option><option value="adult">Over 1 year</option></select>
-</div>
-<label class="text-xs block"><input id="p-vacc" type="checkbox" /> Previously vaccinated</label>
-<div id="vacc-fields" class="hidden grid grid-cols-2 gap-2"><input type="text" id="p-vname" placeholder="Vaccine given" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" /><input id="p-vdate" type="date" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" /></div>
-<button type="submit" class="bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold py-2.5 px-4 rounded-lg">Add pet</button>
+<p class="text-xs font-semibold">Add another pet/animal</p>
+<div id="pet-fields" class="space-y-2"></div>
+<label class="text-xs block"><input type="checkbox" id="p-vacc" /> Previously vaccinated</label>
+<div id="vacc-fields" class="hidden grid grid-cols-2 gap-2"><input type="text" id="p-vname" placeholder="Vaccine given" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" /><input type="date" id="p-vdate" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" /></div>
+<button type="submit" class="bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold py-2.5 px-4 rounded-lg">Add pet/animal</button>
 <p id="pet-msg" role="status"></p>
 </form>
 </section><section id="sec-registry" data-view="dashboard" data-role="admin" class="hidden bg-white border border-slate-200 rounded-2xl p-5 space-y-3">
@@ -92,12 +88,11 @@
 <div id="registry" class="space-y-2"></div>
 <details class="text-xs border-t border-slate-200 pt-3"><summary class="cursor-pointer font-semibold">Change password</summary>
 <form novalidate id="pw-change-form" class="space-y-2 mt-2">
-<input id="new-pw" type="password" required autocomplete="new-password" placeholder="New password (at least 10 characters)" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
+<input type="password" id="new-pw" required autocomplete="new-password" placeholder="New password (at least 10 characters)" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
 <button type="submit" class="bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold py-2.5 px-4 rounded-lg">Save password</button>
 <p id="pw-msg" role="status"></p>
 </form></details>
 </section><section id="sec-notes" data-view="notifications" data-role="client" class="hidden bg-white border border-slate-200 rounded-2xl p-5 space-y-3">
-<h2 class="font-bold text-sm">Notification</h2>
 <div id="notes" class="space-y-2"></div>
 </section><section id="sec-anotes" data-view="notifications" data-role="admin" class="hidden bg-white border border-slate-200 rounded-2xl p-5 space-y-3">
 <h2 class="font-bold text-sm">New clients waiting for a registration number</h2>
@@ -105,20 +100,17 @@
 <h2 class="font-bold text-sm pt-2">Complaints</h2>
 <div id="a-complaints" class="space-y-2"></div>
 </section><section id="sec-regno" data-view="regno" data-role="client" class="hidden bg-white border border-slate-200 rounded-2xl p-5 space-y-3">
-<h2 class="font-bold text-sm">Registration Number</h2>
 <div id="regno-list" class="space-y-2"></div>
 </section><section id="sec-complaint" data-view="complaint" data-role="client" class="hidden bg-white border border-slate-200 rounded-2xl p-5 space-y-3">
-<h2 class="font-bold text-sm">Complaint</h2>
 <form novalidate id="complaint-form" class="space-y-2">
 <label for="c-reg" class="block text-xs font-semibold">Registration number</label>
-<input type="text" id="c-reg" required autocomplete="off" placeholder="The number assigned to your pet" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
+<input type="text" id="c-reg" required autocomplete="off" placeholder="The number assigned to your pet/animal" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg" />
 <label for="c-text" class="block text-xs font-semibold">Your complaint</label>
 <textarea id="c-text" required rows="4" maxlength="2000" class="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg"></textarea>
 <button type="submit" class="bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold py-2.5 px-4 rounded-lg">Send to Dr. Aubel</button>
 <p id="c-msg" role="status"></p>
 </form>
 </section><section id="sec-plans" data-view="plans" data-role="both" class="hidden bg-white border border-slate-200 rounded-2xl p-5 space-y-3">
-<h2 class="font-bold text-sm">Purchased plans</h2>
 <p class="text-xs text-slate-500">No purchased plans yet.</p>
 </section>
 </main>

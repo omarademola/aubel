@@ -1,4 +1,5 @@
-// Site menu: hover dropdown on desktop, slide-in drawer on mobile (swipe right from the left side, or tap the menu button).
+// Site menu on the LEFT of the logo. Desktop: opens on hover (pure CSS). Mobile: slides in from the left under the header
+// (swipe right from the left side, or tap the icon). It never covers the logo or the header.
 (function () {
   const host = document.getElementById("site-menu");
   if (!host || !window.sb) return;
@@ -9,22 +10,29 @@
     if (text) node.textContent = text;
     return node;
   };
-  const trigger = make("button", "relative text-xs md:text-sm font-semibold text-brand-600 border border-brand-200 bg-brand-50 px-3 py-2 rounded-lg", "☰ Menu");
+  const trigger = make("button", "menu-btn");
   trigger.type = "button";
+  trigger.setAttribute("aria-label", "Menu");
   trigger.setAttribute("aria-haspopup", "true");
   trigger.setAttribute("aria-expanded", "false");
+  trigger.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>';
   const dot = make("span", "menu-dot hidden");
   trigger.append(dot);
-  const overlay = make("div", "menu-overlay hidden");
-  const panel = make("nav", "menu-panel bg-white border border-slate-200 shadow-xl space-y-1");
+  const panel = make("nav", "menu-panel");
   panel.setAttribute("aria-label", "Site menu");
-  host.append(trigger);
-  document.body.append(overlay, panel);
+  const overlay = make("div", "menu-overlay hidden");
+  host.append(trigger, overlay, panel);
 
-  let timer;
+  const setNavHeight = () => {
+    const nav = host.closest("nav");
+    if (nav) document.documentElement.style.setProperty("--nav-h", `${nav.offsetHeight}px`);
+  };
+  setNavHeight();
+  window.addEventListener("resize", setNavHeight);
+
   const isOpen = () => panel.classList.contains("open");
   const open = () => {
-    clearTimeout(timer);
+    setNavHeight();
     panel.classList.add("open");
     overlay.classList.toggle("hidden", desktop());
     trigger.setAttribute("aria-expanded", "true");
@@ -36,10 +44,6 @@
   };
   trigger.addEventListener("click", () => (isOpen() ? close() : open()));
   overlay.addEventListener("click", close);
-  [trigger, panel].forEach((node) => {
-    node.addEventListener("mouseenter", () => desktop() && open());
-    node.addEventListener("mouseleave", () => desktop() && (timer = setTimeout(close, 180)));
-  });
   document.addEventListener("keydown", (e) => e.key === "Escape" && close());
   let start = null;
   document.addEventListener("touchstart", (e) => { start = { x: e.touches[0].clientX, y: e.touches[0].clientY }; }, { passive: true });
@@ -52,10 +56,17 @@
     start = null;
   }, { passive: true });
 
+  const here = () => {
+    const page = location.pathname.split("/").pop() || "index.html";
+    if (page !== "account.html") return page;
+    return location.hash ? `account.html${location.hash}` : location.search ? `account.html${location.search}` : "account.html#dashboard";
+  };
+  const markActive = () => panel.querySelectorAll("a.menu-item").forEach((a) => (a.getAttribute("href") === here() ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current")));
+
   const item = (label, href, count) => {
-    const a = make("a", "flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-800 hover:bg-brand-50", label);
+    const a = make("a", "menu-item", label);
     a.href = href;
-    if (count) a.append(make("span", "bg-red-600 text-white text-[11px] font-bold px-1.5 py-0.5 rounded-full", String(count)));
+    if (count) a.append(make("span", "menu-badge", String(count)));
     a.addEventListener("click", close);
     return a;
   };
@@ -77,15 +88,17 @@
         total = count || 0;
         nodes.push(item("Dashboard", "account.html#dashboard"), item("Purchased plans", "account.html#plans"), item("Notification", "account.html#notifications", total), item("Registration Number", "account.html#regno"), item("Complaint", "account.html#complaint"));
       }
-      const out = make("button", "w-full text-left px-3 py-2.5 rounded-lg text-sm font-semibold text-red-700 hover:bg-red-50", "Sign out");
+      const out = make("button", "menu-item danger", "Sign out");
       out.type = "button";
       out.addEventListener("click", async () => { await sb.auth.signOut(); location.href = "index.html"; });
       nodes.push(out);
     }
     panel.replaceChildren(...nodes);
     dot.classList.toggle("hidden", !total);
+    markActive();
   }
   window.refreshMenu = render;
+  window.addEventListener("hashchange", markActive);
   render();
   sb.auth.onAuthStateChange(() => setTimeout(render, 0));
 })();

@@ -1,0 +1,9 @@
+{
+  "name": "aubel-vet-on-the-go",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Aubel Vet On The Go website with private server functions in /api",
+  "dependencies": {
+    "nodemailer": "6.10.1"
+  }
+}

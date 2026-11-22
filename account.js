@@ -2,6 +2,19 @@ const $ = (id) => document.getElementById(id);
 const INPUT = "w-full text-xs p-2.5 bg-white border border-slate-300 rounded-lg";
 const BTN = "bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold py-2.5 px-4 rounded-lg";
 const AGES = { young: "Under 6 months", juvenile: "6-12 months", adult: "Over 1 year" };
+const TITLES = { dashboard: "Dashboard", notifications: "Notification", regno: "Registration Number", complaint: "Complaint", plans: "Purchased plans" };
+const FIELDS = [
+  { id: "p-name", label: "Animal Name", req: true },
+  { id: "p-species", label: "Animal type", type: "select", req: true, opts: ["Dog", "Cat", "Sheep", "Goat", "Rabbit", "Poultry", "Cattle"].map((s) => [s, s]) },
+  { id: "p-age", label: "Age", type: "select", req: true, opts: Object.entries(AGES) },
+  { id: "p-breed", label: "Breed" },
+  { id: "p-sex", label: "Sex", type: "radio", req: true, opts: [["male", "Male"], ["female", "Female"]] },
+  { id: "p-color", label: "Color/Markings" },
+  { id: "p-housing", label: "House/Bedding" },
+  { id: "p-feed", label: "Type of Feed" },
+  { id: "p-freq", label: "Frequency of feeding", type: "select", opts: [["once", "Once"], ["twice", "Twice"], ["thrice", "Thrice"], ["ad-libitum", "Ad-libitum"]] },
+  { id: "p-others", label: "Other animals", type: "radio", req: true, opts: [["yes", "Yes"], ["no", "No"]] },
+];
 let me = null;
 let uid = null;
 let pendingEmail = "";
@@ -19,6 +32,66 @@ const say = (id, message, bad) => {
 const friendly = (error) => (error.status === 429 ? "Too many attempts. Please wait a minute and try again." : error.message);
 const shownPhone = (p) => (p ? `+234 (0) ${ngPhone.show(p)}` : "-");
 const refresh = () => window.refreshMenu && window.refreshMenu();
+const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1) : "");
+const syncName = (full) => { const r = sb.auth.updateUser({ data: nameMeta(full) }); if (r && r.catch) r.catch(() => {}); };
+
+function table(title, rows) {
+  const box = h("div", "space-y-1");
+  box.append(h("h3", "font-semibold text-xs", title));
+  const grid = h("table", "w-full text-xs border border-slate-200");
+  const body = h("tbody");
+  rows.forEach(([k, v]) => {
+    const tr = h("tr", "border-t border-slate-200");
+    tr.append(h("th", "text-left font-semibold p-2 w-2/5 align-top bg-slate-50", k), h("td", "p-2 break-words", v || "-"));
+    body.append(tr);
+  });
+  grid.append(body);
+  box.append(grid);
+  return box;
+}
+const animalTable = (a) => table(a.name, [
+  ["Animal type", a.species], ["Breed", a.breed], ["Age", AGES[a.age_band]], ["Sex", cap(a.sex)], ["Color/Markings", a.color_markings],
+  ["House/Bedding", a.housing], ["Type of Feed", a.feed_type], ["Frequency of feeding", cap(a.feed_frequency)],
+  ["Other animals", a.other_animals == null ? "" : a.other_animals ? "Yes" : "No"],
+  ["Vaccination", a.vaccinated ? `${a.vaccine_name || "Yes"}${a.vaccine_date ? `, ${a.vaccine_date}` : ""}` : "No previous vaccination"],
+  ["Registration number", a.registration_no || "Not assigned yet"],
+]);
+const fromRegistry = (r) => ({ ...r, name: r.pet_name });
+
+function renderFields() {
+  const box = $("pet-fields");
+  FIELDS.forEach((f) => {
+    const wrap = h("div");
+    if (f.type === "radio") {
+      const set = h("fieldset", "space-y-1");
+      set.append(h("legend", "block text-xs font-semibold", f.label));
+      f.opts.forEach(([value, text], i) => {
+        const label = h("label", "mr-4 text-xs");
+        const radio = h("input");
+        Object.assign(radio, { type: "radio", name: f.id, value, required: !!f.req && i === 0 });
+        label.append(radio, ` ${text}`);
+        set.append(label);
+      });
+      wrap.append(set);
+    } else {
+      const label = h("label", "block text-xs font-semibold mb-1", f.label);
+      label.htmlFor = f.id;
+      const control = f.type === "select" ? h("select", INPUT) : h("input", INPUT);
+      control.id = f.id;
+      control.required = !!f.req;
+      if (f.type === "select") {
+        control.append(new Option("Choose", ""));
+        f.opts.forEach(([value, text]) => control.append(new Option(text, value)));
+      } else {
+        control.type = "text";
+        control.maxLength = 120;
+      }
+      wrap.append(label, control);
+    }
+    box.append(wrap);
+  });
+}
+const value = (f) => (f.type === "radio" ? (document.querySelector(`input[name="${f.id}"]:checked`) || {}).value : $(f.id).value.trim());
 
 async function init() {
   const { data: { session } } = await sb.auth.getSession();
@@ -26,7 +99,8 @@ async function init() {
   if (session) {
     uid = session.user.id;
     const { data } = await sb.from("profiles").select("full_name,phone,address,role").eq("id", uid).single();
-    me = { ...data, meta: session.user.user_metadata || {} };
+    me = { ...data, email: session.user.email, meta: session.user.user_metadata || {} };
+    if (me.full_name && !me.meta.first_name) syncName(me.full_name);
   }
   route();
 }
@@ -37,13 +111,18 @@ function route() {
   const role = me ? (me.role === "admin" ? "admin" : "client") : null;
   $("login-client").classList.toggle("hidden", !!me || asAdmin);
   $("login-admin").classList.toggle("hidden", !!me || !asAdmin);
-  document.querySelectorAll("[data-view]").forEach((s) => s.classList.toggle("hidden", !(me && s.dataset.view === view && (s.dataset.role === "both" || s.dataset.role === role))));
+  let shown = false;
+  document.querySelectorAll("[data-view]").forEach((s) => {
+    const on = !!me && s.dataset.view === view && (s.dataset.role === "both" || s.dataset.role === role);
+    s.classList.toggle("hidden", !on);
+    shown = shown || on;
+  });
+  const title = $("view-title");
+  title.classList.toggle("hidden", !shown);
+  title.textContent = shown ? (role === "admin" && view === "plans" ? "Purchased Plans" : TITLES[view]) : "";
+  window.scrollTo(0, 0);
   if (!me) return;
-  const loaders = {
-    dashboard: role === "admin" ? loadRegistry : loadClient,
-    notifications: role === "admin" ? loadAdminNotes : loadNotes,
-    regno: loadRegno,
-  };
+  const loaders = { dashboard: role === "admin" ? loadRegistry : loadClient, notifications: role === "admin" ? loadAdminNotes : loadNotes, regno: loadRegno };
   if (loaders[view]) loaders[view]();
 }
 
@@ -52,8 +131,9 @@ async function sendCode(event) {
   if (!inlineValidate(event.target)) return;
   const name = $("su-name").value.trim();
   const email = $("email").value.trim().toLowerCase();
-  const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true, data: name ? { full_name: name } : undefined } });
+  const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true, data: name ? nameMeta(name) : undefined } });
   if (error) return say("auth-msg", friendly(error), true);
+  try { localStorage.setItem("aubel:login", JSON.stringify({ name, email })); } catch (e) { /* storage unavailable */ }
   pendingEmail = email;
   $("verify").classList.remove("hidden");
   $("code").focus();
@@ -80,6 +160,7 @@ async function passwordLogin(event) {
 }
 
 function loadClient() {
+  $("owner-table").replaceChildren(table("Owner", [["Name", me.full_name || me.meta.full_name], ["Email", me.email], ["Phone", shownPhone(me.phone)], ["Address", me.address]]));
   $("full_name").value = me.full_name || me.meta.full_name || "";
   $("phone").value = ngPhone.show(me.phone);
   $("address").value = me.address || "";
@@ -89,8 +170,13 @@ function loadClient() {
 async function saveProfile(event) {
   event.preventDefault();
   if (!inlineValidate(event.target)) return;
-  const { error } = await sb.from("profiles").update({ full_name: $("full_name").value.trim(), phone: ngPhone.value($("phone")), address: $("address").value.trim() }).eq("id", uid);
-  say("profile-msg", error ? friendly(error) : "Details saved.", !!error);
+  const row = { full_name: $("full_name").value.trim(), phone: ngPhone.value($("phone")), address: $("address").value.trim() };
+  const { error } = await sb.from("profiles").update(row).eq("id", uid);
+  if (error) return say("profile-msg", friendly(error), true);
+  me = { ...me, ...row };
+  syncName(row.full_name);
+  say("profile-msg", "Details saved.");
+  loadClient();
 }
 
 async function loadPets() {
@@ -98,30 +184,26 @@ async function loadPets() {
   const box = $("pets");
   box.replaceChildren();
   if (error) return say("pet-msg", friendly(error), true);
-  if (!data.length) box.append(h("p", "text-xs text-slate-500", "No pets saved yet."));
+  if (!data.length) box.append(h("p", "text-xs text-slate-500", "No pet(s)/animal(s) saved yet."));
   data.forEach((p) => {
-    const card = h("div", "border border-slate-200 rounded-lg p-3 flex justify-between gap-3");
-    const info = h("div", "text-xs space-y-0.5");
-    info.append(
-      h("p", "font-bold text-sm", p.name),
-      h("p", "", `${p.species}${p.breed ? `, ${p.breed}` : ""}, ${AGES[p.age_band] || "age not set"}`),
-      h("p", "", p.vaccinated ? `Vaccinated: ${p.vaccine_name || "yes"}${p.vaccine_date ? `, ${p.vaccine_date}` : ""}` : "No previous vaccination"),
-      h("p", "text-brand-600 font-semibold", p.registration_no ? `Registration no: ${p.registration_no}` : "Registration number pending"),
-    );
-    const remove = h("button", "text-xs text-red-700 font-semibold", "Remove");
-    remove.type = "button";
-    let armed = false;
-    remove.onclick = async () => {
-      if (!armed) {
-        armed = true;
-        remove.textContent = "Tap again to confirm";
-        setTimeout(() => { armed = false; remove.textContent = "Remove"; }, 4000);
-        return;
-      }
-      await sb.from("pets").delete().eq("id", p.id);
-      loadPets();
-    };
-    card.append(info, remove);
+    const card = h("div", "space-y-1");
+    card.append(animalTable(p));
+    if (!p.registration_no) {
+      const remove = h("button", "text-xs text-red-700 font-semibold", "Remove");
+      remove.type = "button";
+      let armed = false;
+      remove.onclick = async () => {
+        if (!armed) {
+          armed = true;
+          remove.textContent = "Tap again to confirm";
+          setTimeout(() => { armed = false; remove.textContent = "Remove"; }, 4000);
+          return;
+        }
+        await sb.from("pets").delete().eq("id", p.id);
+        loadPets();
+      };
+      card.append(remove);
+    }
     box.append(card);
   });
 }
@@ -129,15 +211,18 @@ async function loadPets() {
 async function addPet(event) {
   event.preventDefault();
   if (!inlineValidate(event.target)) return;
+  const v = Object.fromEntries(FIELDS.map((f) => [f.id, value(f)]));
   const vaccinated = $("p-vacc").checked;
   const { error } = await sb.from("pets").insert({
-    owner_id: uid, name: $("p-name").value.trim(), species: $("p-species").value, breed: $("p-breed").value.trim() || null,
-    age_band: $("p-age").value || null, vaccinated, vaccine_name: vaccinated ? $("p-vname").value.trim() || null : null, vaccine_date: vaccinated ? $("p-vdate").value || null : null,
+    owner_id: uid, name: v["p-name"], species: v["p-species"], age_band: v["p-age"], breed: v["p-breed"] || null, sex: v["p-sex"],
+    color_markings: v["p-color"] || null, housing: v["p-housing"] || null, feed_type: v["p-feed"] || null, feed_frequency: v["p-freq"] || null,
+    other_animals: v["p-others"] === "yes", vaccinated, vaccine_name: vaccinated ? $("p-vname").value.trim() || null : null, vaccine_date: vaccinated ? $("p-vdate").value || null : null,
   });
   if (error) return say("pet-msg", friendly(error), true);
   $("pet-form").reset();
   $("vacc-fields").classList.add("hidden");
-  say("pet-msg", "Pet added.");
+  say("pet-msg", "Pet/animal added.");
+  refresh();
   loadPets();
 }
 
@@ -163,7 +248,7 @@ async function loadRegno() {
   const box = $("regno-list");
   box.replaceChildren();
   if (error) return box.append(h("p", "text-xs text-red-700", friendly(error)));
-  if (!data.length) box.append(h("p", "text-xs text-slate-500", "No pets saved yet."));
+  if (!data.length) box.append(h("p", "text-xs text-slate-500", "No pet(s)/animal(s) saved yet."));
   data.forEach((p) => {
     const card = h("div", "border border-slate-200 rounded-lg p-3 text-xs");
     card.append(h("p", "font-bold text-sm", `${p.name} (${p.species})`), h("p", p.registration_no ? "text-brand-600 font-semibold" : "text-slate-500", p.registration_no || "Not assigned yet"));
@@ -181,9 +266,26 @@ async function sendComplaint(event) {
   say("c-msg", "Your complaint has been sent to Dr. Aubel.");
 }
 
+function twoStep(label, action) {
+  const button = h("button", "text-xs text-red-700 font-semibold", label);
+  button.type = "button";
+  let armed = false;
+  button.onclick = async () => {
+    if (!armed) {
+      armed = true;
+      button.textContent = "Tap again to confirm";
+      setTimeout(() => { armed = false; button.textContent = label; }, 4000);
+      return;
+    }
+    await action();
+  };
+  return button;
+}
+
 function assignRow(r, done) {
   const line = h("div", "flex gap-2 pt-1");
   const input = h("input", `${INPUT} flex-1`);
+  input.type = "text";
   input.value = r.registration_no || "";
   input.placeholder = "Registration number";
   input.maxLength = 40;
@@ -208,6 +310,7 @@ async function loadRegistry() {
   box.replaceChildren();
   if (error) return say("reg-msg", friendly(error), true);
   if (!data.length) box.append(h("p", "text-xs text-slate-500", "No clients yet."));
+  const reload = () => { refresh(); loadRegistry(); };
   data.forEach((r) => {
     const row = h("div", "border border-slate-200 rounded-lg p-3 text-xs space-y-1");
     const top = h("div", "flex items-center justify-between gap-2");
@@ -215,13 +318,17 @@ async function loadRegistry() {
     toggle.type = "button";
     top.append(toggle, h("span", "text-slate-500", new Date(r.registered_at).toLocaleDateString()));
     row.append(top, h("p", "", `${r.pet_name} (${r.species}) | Owner: ${r.owner_name || "-"}`));
-    const detail = h("div", "hidden space-y-1 border-t border-slate-200 pt-2");
-    detail.append(h("p", "font-semibold", "Owner profile"), h("p", "", `${r.owner_name || "-"} | ${shownPhone(r.phone)} | ${r.email}`), h("p", "", `Address: ${r.address || "-"}`), h("p", "font-semibold pt-1", "Pets and animals"));
+    const detail = h("div", "hidden space-y-3 border-t border-slate-200 pt-2");
+    detail.append(table("Owner", [["Name", r.owner_name], ["Email", r.email], ["Phone", shownPhone(r.phone)], ["Address", r.address]]));
     data.filter((x) => x.owner_id === r.owner_id).forEach((x) => {
-      const vacc = x.vaccinated ? `vaccinated${x.vaccine_name ? ` (${x.vaccine_name}${x.vaccine_date ? `, ${x.vaccine_date}` : ""})` : ""}` : "not vaccinated";
-      detail.append(h("p", "", `${x.pet_name}: ${x.species}${x.breed ? `, ${x.breed}` : ""}, ${AGES[x.age_band] || "age not set"}, ${vacc}, no. ${x.registration_no || "pending"}`));
+      const block = h("div", "space-y-1");
+      block.append(animalTable(fromRegistry(x)), assignRow(x, reload));
+      const actions = h("div", "flex gap-4");
+      if (x.registration_no) actions.append(twoStep("Remove registration number", async () => { await sb.rpc("admin_remove_registration_no", { p_pet: x.pet_id }); reload(); }));
+      actions.append(twoStep("Delete animal record", async () => { await sb.rpc("admin_delete_pet", { p_pet: x.pet_id }); reload(); }));
+      block.append(actions);
+      detail.append(block);
     });
-    detail.append(assignRow(r, loadRegistry));
     toggle.onclick = () => detail.classList.toggle("hidden");
     row.append(detail);
     box.append(row);
@@ -255,6 +362,12 @@ async function loadAdminNotes() {
   });
 }
 
+renderFields();
+try {
+  const saved = JSON.parse(localStorage.getItem("aubel:login") || "{}");
+  if (saved.name) $("su-name").value = saved.name;
+  if (saved.email) { $("email").value = saved.email; $("pw-email").value = saved.email; }
+} catch (e) { /* storage unavailable */ }
 $("send").addEventListener("submit", sendCode);
 $("verify").addEventListener("submit", verifyCode);
 $("pw-form").addEventListener("submit", passwordLogin);
